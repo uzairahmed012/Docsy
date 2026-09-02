@@ -1,4 +1,3 @@
-@@ -0,0 +1,216 @@
 import { APP_ROOT } from "@/lib/dashboard-nav"
 
 /** A new, empty chat. The sidebar's "New chat" button and nav item both land here. */
@@ -8,210 +7,212 @@ export function chatRoute(chatId: string) {
   return `${CHATS_ROUTE}/${chatId}`
 }
 
-/** What the drop zone accepts — `ui-design/dashboard/light/chat-main.png`. */
-export const DOCUMENT_ACCEPT = [
-  ".pdf",
-  ".doc",
-  ".docx",
-  ".rtf",
-  ".txt",
-  ".md",
-  ".ppt",
-  ".pptx",
-  ".xls",
-  ".xlsx",
-  ".csv",
-  ".png",
-  ".jpg",
-  ".jpeg",
-  ".tif",
-  ".tiff",
-].join(",")
+/**
+ * Carries a question into a chat.
+ *
+ * Without `autoAsk` the question lands in the composer and waits for Enter —
+ * what the command palette wants, where the row is a jump and the developer
+ * may still be composing the thought. With it, the chat asks on arrival: the
+ * search page's card promises "one cited answer", and making someone press
+ * Enter to collect on that is a step that buys them nothing.
+ *
+ * Both are read once on mount and then stripped from the URL, so a reload
+ * never re-asks.
+ */
+export function chatQuestionHref(
+  chatId: string,
+  question: string,
+  { autoAsk = false }: { autoAsk?: boolean } = {}
+) {
+  const params = new URLSearchParams({ q: question })
 
-export const DOCUMENT_FORMATS_LABEL =
-  "PDF, Word, slides, spreadsheets, scans · 40+ formats"
+  if (autoAsk) params.set("ask", "1")
+
+  return `${chatRoute(chatId)}?${params}`
+}
+
+/** What the drop zone accepts — `ui-design/dashboard/light/chat-main.png`. */
+export const DOCUMENT_ACCEPT = ".pdf,.docx,.txt,.md"
+
+export const DOCUMENT_FORMATS_LABEL = "PDF, Word, text, markdown · up to 15 MB"
 
 /** One chat can only hold so much context before answers get vague. */
 export const MAX_DOCUMENTS_PER_CHAT = 20
 
-/** Plan quota shown in the composer footer — `chat-page-chat.png`. */
-export const MONTHLY_QUESTION_LIMIT = 50
-
-export type ChatSource = {
-  /** Citation index, matching the `[n]` markers in the answer. */
-  index: number
-  document: string
-  page: number
+/**
+ * The month's allowance, spent and remaining.
+ *
+ * The limit itself is no longer a constant — it comes from the workspace's
+ * plan, which comes from its Stripe subscription. `PLAN_QUESTION_LIMITS` in
+ * `lib/billing.ts` holds the figures, and `getWorkspaceQuestionLimit` is what
+ * resolves one for a workspace. Business is `Infinity`, which every helper here
+ * handles rather than special-cases.
+ */
+export type QuestionAllowance = {
+  used: number
+  limit: number
+  /** Never negative, so a lowered limit reads as spent rather than owed. */
+  remaining: number
+  /** True once the allowance is gone and the next question must be refused. */
+  spent: boolean
 }
 
-export type ChatMessage = {
+/**
+ * Both halves of "12 / 50 questions", and the verdict the messages route
+ * refuses on. `limit` is required: a default here would be a second opinion
+ * about what a plan allows, and there can only be one.
+ */
+export function questionAllowance(
+  used: number,
+  limit: number
+): QuestionAllowance {
+  return {
+    used,
+    limit,
+    remaining: Math.max(0, limit - used),
+    spent: used >= limit,
+  }
+}
+
+/** True for the Business plan's allowance, which has no ceiling to show. */
+export function isUnlimited(limit: number) {
+  return !Number.isFinite(limit)
+}
+
+/**
+ * "12 / 50 questions" — or just "12 questions" where there's nothing to count
+ * down to. The denominator is the whole point of the meter, so on an unlimited
+ * plan it goes rather than reading "12 / ∞".
+ */
+export function formatQuestionCount(used: number, limit: number) {
+  return isUnlimited(limit)
+    ? `${used} ${used === 1 ? "question" : "questions"}`
+    : `${used} / ${limit} questions`
+}
+
+/** What the composer and the API say when the month's questions are gone. */
+export function allowanceSpentMessage(limit: number) {
+  return `You've used all ${limit} questions on your plan this month. Your allowance resets on the 1st, or upgrade for more.`
+}
+
+/** "2.4 MB", "880 KB" — shared so uploads and library rows read the same. */
+export function formatBytes(bytes: number) {
+  if (bytes < 1024) return `${bytes} B`
+  if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} KB`
+
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
+}
+
+/**
+ * Flattens Markdown to the words a reader would say out loud — for previews
+ * and other places an answer is shown as one line of plain text.
+ *
+ * Deliberately lossy: structure is dropped rather than approximated, because
+ * a one-line summary has nowhere to put a heading or a list.
+ */
+export function toPlainText(markdown: string) {
+  return (
+    markdown
+      // Fenced code goes entirely; a snippet says nothing useful in a preview.
+      .replace(/```[\s\S]*?```/g, " ")
+      .replace(/`([^`]+)`/g, "$1")
+      // Links and images keep their label, not their target.
+      .replace(/!?\[([^\]]*)\]\([^)]*\)/g, "$1")
+      // Citation markers, including the `[1:0]` passage form. The optional
+      // leading space goes with them, so "a claim [1]." doesn't become
+      // "a claim ." once the marker is gone.
+      .replace(/\s?\[\d+(?::\d+)?\]/g, "")
+      // Headings, quotes and bullets at the start of a line.
+      .replace(/^\s{0,3}(?:#{1,6}|>|[-*+])\s+/gm, "")
+      .replace(/^\s{0,3}\d+\.\s+/gm, "")
+      // Horizontal rules and table scaffolding.
+      .replace(/^\s{0,3}(?:[-*_]\s*){3,}$/gm, " ")
+      .replace(/\|/g, " ")
+      // Emphasis, bold first so `**x**` doesn't leave a stray asterisk.
+      .replace(/(\*\*|__)(.*?)\1/g, "$2")
+      .replace(/(\*|_)(?=\S)(.*?)(?<=\S)\1/g, "$2")
+      .replace(/\s+/g, " ")
+      .trim()
+  )
+}
+
+export type DocumentStatusView = "PROCESSING" | "READY" | "FAILED"
+
+export type LibraryDocumentView = {
+  id: string
+  name: string
+  /** Size and shape, e.g. "2.4 MB · 18 pages". */
+  meta: string
+  /** Extension pill on the right of the row. */
+  format: string
+  status: DocumentStatusView
+}
+
+/** One passage Claude quoted, with the document text either side of it. */
+export type ChatSourcePassage = {
+  /** The exact wording cited — highlighted in the source reader. */
+  text: string
+  /**
+   * Surrounding text, so the quote can be read in context. Null for PDFs,
+   * whose text we never extract — Claude reads those natively.
+   */
+  before: string | null
+  after: string | null
+}
+
+/** One resolved citation behind an answer's `[n]` marker. */
+export type ChatSource = {
+  index: number
+  /** Null on answers written before documents were linked to citations. */
+  documentId: string | null
+  document: string
+  /** Null for formats without pages, like markdown or a plain-text brief. */
+  page: number | null
+  /** Every area of this source the answer leaned on, in the order cited. */
+  passages: ChatSourcePassage[]
+}
+
+/** How an answer was rated, or null while nobody has said. */
+export type MessageFeedbackView = "UP" | "DOWN" | null
+
+export type ChatMessageView = {
   id: string
   role: "user" | "assistant"
   content: string
-  sources?: ChatSource[]
+  sources: ChatSource[]
+  feedback: MessageFeedbackView
 }
 
-export type Chat = {
+/** A row in the sidebar's history, and on the home page's recent list. */
+export type ChatSummary = {
   id: string
   title: string
-  /** Opening line of the last answer, for the home page's list. */
-  reply: string
-  /** Relative age, e.g. "2h". */
-  age: string
-  /** Documents attached to the chat. */
-  documents: number
-  /** Questions asked so far, against `MONTHLY_QUESTION_LIMIT`. */
-  questionsUsed: number
-  messages: ChatMessage[]
+  /** ISO timestamp of the last turn, for "2h" style ages. */
+  updatedAt: string
+  /** Opening of the latest answer, for the home page's two-line rows. */
+  preview: string | null
 }
 
-/**
- * Design copy — real chats replace this once they're stored. Titles and the
- * order match `ui-design/dashboard/light/chat-sidebar.png`; the first chat's
- * exchange is the one in `chat-page-chat.png`.
- */
-export const recentChats: Chat[] = [
-  {
-    id: "termination-terms",
-    title: "Termination terms across contracts",
-    reply: "Either party may terminate with 60 days'…",
-    age: "2h",
-    documents: 3,
-    questionsUsed: 18,
-    messages: [
-      {
-        id: "termination-terms-1",
-        role: "user",
-        content:
-          "What's the termination notice period, and when can we terminate immediately?",
-      },
-      {
-        id: "termination-terms-2",
-        role: "assistant",
-        content:
-          "Either party may terminate this agreement for convenience with 60 days' prior written notice [1]. Termination may also occur immediately where there is a material breach that remains uncured 30 days after written notice [2].",
-        sources: [
-          { index: 1, document: "Q3_Vendor_Agreement.pdf", page: 12 },
-          { index: 2, document: "Master_Services_Agreement.docx", page: 8 },
-        ],
-      },
-    ],
-  },
-  {
-    id: "q3-revenue",
-    title: "Q3 revenue with page references",
-    reply: "Revenue rose 14% to $23.8M, per p.4…",
-    age: "1d",
-    documents: 2,
-    questionsUsed: 9,
-    messages: [
-      {
-        id: "q3-revenue-1",
-        role: "user",
-        content: "What was Q3 revenue, and what drove the change?",
-      },
-      {
-        id: "q3-revenue-2",
-        role: "assistant",
-        content:
-          "Q3 revenue rose 14% year over year to $23.8M [1]. The report attributes most of the increase to enterprise renewals, which grew 21% against a flat self-serve segment [2].",
-        sources: [
-          { index: 1, document: "Q3_Financial_Report.pdf", page: 4 },
-          { index: 2, document: "Q3_Financial_Report.pdf", page: 11 },
-        ],
-      },
-    ],
-  },
-  {
-    id: "liability-caps",
-    title: "Liability caps and indemnities",
-    reply: "Liability is capped at fees paid in the prior…",
-    age: "3d",
-    documents: 4,
-    questionsUsed: 6,
-    messages: [
-      {
-        id: "liability-caps-1",
-        role: "user",
-        content: "How is liability capped, and what falls outside the cap?",
-      },
-      {
-        id: "liability-caps-2",
-        role: "assistant",
-        content:
-          "Liability is capped at the fees paid in the twelve months preceding the claim [1]. The cap does not apply to indemnification obligations, breaches of confidentiality, or wilful misconduct [2].",
-        sources: [
-          { index: 1, document: "Master_Services_Agreement.docx", page: 14 },
-          { index: 2, document: "Master_Services_Agreement.docx", page: 15 },
-        ],
-      },
-    ],
-  },
-  {
-    id: "renewal-clauses",
-    title: "Renewal & auto-renewal clauses",
-    reply: "Terms auto-renew for successive 12-month…",
-    age: "5d",
-    documents: 3,
-    questionsUsed: 4,
-    messages: [
-      {
-        id: "renewal-clauses-1",
-        role: "user",
-        content:
-          "Do any of these contracts auto-renew, and what's the opt-out window?",
-      },
-      {
-        id: "renewal-clauses-2",
-        role: "assistant",
-        content:
-          "Two of the three auto-renew for successive 12-month terms unless either party gives notice [1]. The opt-out window differs: 30 days before the renewal date in one, 90 days in the other [2].",
-        sources: [
-          { index: 1, document: "Q3_Vendor_Agreement.pdf", page: 3 },
-          { index: 2, document: "Reseller_Agreement.pdf", page: 6 },
-        ],
-      },
-    ],
-  },
-  {
-    id: "data-processing",
-    title: "Data processing obligations",
-    reply: "Sub-processors require 30 days' notice…",
-    age: "1w",
-    documents: 2,
-    questionsUsed: 3,
-    messages: [
-      {
-        id: "data-processing-1",
-        role: "user",
-        content:
-          "What are our obligations around sub-processors and breach notice?",
-      },
-      {
-        id: "data-processing-2",
-        role: "assistant",
-        content:
-          "New sub-processors require 30 days' advance written notice, and the customer may object within that window [1]. Personal data breaches must be reported without undue delay and in any event within 72 hours of becoming aware [2].",
-        sources: [
-          { index: 1, document: "Data_Processing_Addendum.pdf", page: 5 },
-          { index: 2, document: "Data_Processing_Addendum.pdf", page: 9 },
-        ],
-      },
-    ],
-  },
-]
-
-export function findChat(chatId: string) {
-  return recentChats.find((chat) => chat.id === chatId)
+/** A document attached to a chat, as the composer's scope picker lists it. */
+export type ChatDocumentView = {
+  id: string
+  name: string
 }
 
-/**
- * The chat a `/app/chats/...` path is showing, or `undefined` on `/app/chats`
- * itself. Lets the header name the chat without threading params through the
- * layout.
- */
-export function chatFromPathname(pathname: string) {
-  if (!pathname.startsWith(`${CHATS_ROUTE}/`)) return undefined
-
-  return findChat(pathname.slice(CHATS_ROUTE.length + 1))
+export type ChatDetail = {
+  id: string
+  title: string
+  /** In citation order, which is the order they go to Claude. */
+  documents: ChatDocumentView[]
+  /** Workspace-wide questions this month — what the plan allowance counts. */
+  questionsThisMonth: number
+  /** The plan's ceiling for those questions; `Infinity` on Business. */
+  questionLimit: number
+  messages: ChatMessageView[]
+  /**
+   * True when the last turn is still waiting on Claude — either the seeded
+   * brief analysis or a follow-up whose answer never landed. The conversation
+   * view uses it to kick off streaming on load.
+   */
+  pendingAnswer: boolean
 }
