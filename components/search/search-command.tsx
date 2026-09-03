@@ -152,7 +152,7 @@ function SearchCommand({ className }: { className?: string }) {
             <CommandEmpty>Nothing matches that.</CommandEmpty>
 
             {trimmedQuery && newestChat && (
-              <CommandGroup heading="Ask kora" className={groupHeading}>
+              <CommandGroup heading="Ask docsy" className={groupHeading}>
                 <CommandItem
                   // Forced to stay visible: cmdk would filter this row out on
                   // any query that doesn't happen to match its own text.

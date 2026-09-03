@@ -20,7 +20,7 @@ const FEATURES = [
     icon: MessageSquareIcon,
     title: "Chat with citations",
     description:
-      "Streaming answers where every claim links to the exact line it's based on. If the source isn't there, kora says so.",
+      "Streaming answers where every claim links to the exact line it's based on. If the source isn't there, docsy says so.",
   },
   {
     icon: BookOpenIcon,
@@ -32,7 +32,7 @@ const FEATURES = [
     icon: LayersIcon,
     title: "Multi-document search",
     description:
-      "Ask across your whole library at once. kora retrieves from the right files by meaning, not just keywords.",
+      "Ask across your whole library at once. docsy retrieves from the right files by meaning, not just keywords.",
   },
   {
     icon: FileIcon,

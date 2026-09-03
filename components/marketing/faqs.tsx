@@ -10,9 +10,9 @@ import { SectionHeading } from "@/components/marketing/section-heading"
 
 const FAQS = [
   {
-    question: "How does kora make sure answers are accurate?",
+    question: "How does docsy make sure answers are accurate?",
     answer:
-      "Every claim in an answer links to the passage it came from. Open the source reader to see the exact highlighted text and the page it sits on. When your documents don't support an answer, kora says so instead of guessing.",
+      "Every claim in an answer links to the passage it came from. Open the source reader to see the exact highlighted text and the page it sits on. When your documents don't support an answer, docsy says so instead of guessing.",
   },
   {
     question: "What file types can I upload?",
@@ -25,9 +25,9 @@ const FAQS = [
       "Your documents are encrypted in transit and at rest in an isolated, per-workspace vector store. They are never used to train models, and deleting a document removes its embeddings with it.",
   },
   {
-    question: "Can kora search across many documents at once?",
+    question: "Can docsy search across many documents at once?",
     answer:
-      "Yes. Ask a question against a single file or your entire library, and kora retrieves from the right documents by meaning rather than keyword matching alone.",
+      "Yes. Ask a question against a single file or your entire library, and docsy retrieves from the right documents by meaning rather than keyword matching alone.",
   },
   {
     question: "Does it integrate with my existing tools?",

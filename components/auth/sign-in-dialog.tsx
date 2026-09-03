@@ -24,7 +24,7 @@ type View = "credentials" | "forgot-password" | "reset-sent"
 
 const COPY: Record<View, { title: string; description: string }> = {
   credentials: {
-    title: "Sign in to kora",
+    title: "Sign in to docsy",
     description: "Welcome back — continue to your workspace",
   },
   "forgot-password": {

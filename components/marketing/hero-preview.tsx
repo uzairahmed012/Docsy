@@ -3,7 +3,7 @@ import { CheckIcon, FileIcon } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import { Kbd } from "@/components/ui/kbd"
-import { koraMark } from "@/components/brand/kora-logo"
+import { docsyMark } from "@/components/brand/docsy-logo"
 import { TypingDots } from "@/components/common/typing-dots"
 
 /**
@@ -52,9 +52,9 @@ function AnswerPane() {
       </p>
 
       <div className="flex items-center gap-2">
-        <koraMark className="size-4" />
+        <docsyMark className="size-4" />
         <span className="font-mono text-[0.625rem] tracking-[0.18em] text-muted-foreground">
-          kora
+          docsy
         </span>
       </div>
 

@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils"
 
-function koraMark({ className, ...props }: React.ComponentProps<"svg">) {
+function docsyMark({ className, ...props }: React.ComponentProps<"svg">) {
   return (
     <svg
       viewBox="0 0 32 32"
@@ -47,24 +47,24 @@ const WORDMARK_SIZES = {
   sm: "text-base",
 }
 
-function koraLogo({
+function docsyLogo({
   size = "default",
   className,
   ...props
 }: React.ComponentProps<"span"> & { size?: keyof typeof MARK_SIZES }) {
   return (
     <span className={cn("flex items-center gap-2.5", className)} {...props}>
-      <koraMark className={MARK_SIZES[size]} />
+      <docsyMark className={MARK_SIZES[size]} />
       <span
         className={cn(
           "font-heading font-bold tracking-tight",
           WORDMARK_SIZES[size]
         )}
       >
-        kora
+        docsy
       </span>
     </span>
   )
 }
 
-export { koraLogo, koraMark }
+export { docsyLogo, docsyMark }

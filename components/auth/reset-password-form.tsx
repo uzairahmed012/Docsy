@@ -69,7 +69,7 @@ function ResetPasswordForm({ token }: { token: string }) {
           href="/"
           className="text-sm text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
         >
-          Back to kora
+          Back to docsy
         </Link>
       </div>
     )

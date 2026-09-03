@@ -28,7 +28,7 @@ function AuthHeaderActions() {
       <AuthDialogTrigger mode="sign-in" variant="ghost">
         Sign in
       </AuthDialogTrigger>
-      <AuthDialogTrigger mode="sign-up">Try kora free</AuthDialogTrigger>
+      <AuthDialogTrigger mode="sign-up">Try docsy free</AuthDialogTrigger>
     </div>
   )
 }

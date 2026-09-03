@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button"
 import { Field, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { authErrorMessage } from "@/components/auth/auth-errors"
-import { koraMark } from "@/components/brand/kora-logo"
+import { docsyMark } from "@/components/brand/docsy-logo"
 import { OrganizationSetupLoading } from "@/components/onboarding/organization-setup-loading"
 
 /** Slugs are unique, and two people may well name their workspace the same. */
@@ -76,7 +76,7 @@ function CreateOrganizationForm() {
 
   return (
     <div className="mx-auto w-full max-w-md px-6 pt-24 pb-16">
-      <koraMark className="size-12" />
+      <docsyMark className="size-12" />
 
       <h1 className="mt-6 font-heading text-3xl font-bold tracking-tight">
         Name your organization

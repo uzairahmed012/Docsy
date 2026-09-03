@@ -104,7 +104,7 @@ function SignUpDialog({
           <LockIcon />
           <AlertTitle>New sign-ups are closed right now.</AlertTitle>
           <AlertDescription>
-            kora isn&apos;t accepting new accounts at the moment. If you
+            docsy isn&apos;t accepting new accounts at the moment. If you
             already have one, sign in instead.
           </AlertDescription>
         </Alert>

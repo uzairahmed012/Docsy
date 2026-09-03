@@ -10,7 +10,7 @@ import {
   DialogDescription,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { koraMark } from "@/components/brand/kora-logo"
+import { docsyMark } from "@/components/brand/docsy-logo"
 
 /**
  * The chrome both auth dialogs share: centered mark, title, description, and
@@ -55,7 +55,7 @@ function AuthDialogShell({
 
         <div className="flex flex-col gap-6 px-8 pt-8 pb-7">
           <div className="flex flex-col items-center gap-4 text-center">
-            <koraMark className="size-11" />
+            <docsyMark className="size-11" />
             <div className="flex flex-col gap-1.5">
               <DialogTitle className="font-heading text-xl leading-tight font-bold">
                 {title}

@@ -29,7 +29,7 @@ function FooterCta() {
               mode="sign-up"
               className="h-11 bg-brand px-5 text-base text-brand-foreground hover:bg-brand/90 has-data-[icon=inline-end]:pr-5"
             >
-              Try kora free
+              Try docsy free
               <ArrowRightIcon data-icon="inline-end" />
             </AuthDialogTrigger>
             <Button variant="outline" className="h-11 px-5 text-base">

@@ -5,7 +5,7 @@ import { SectionHeading } from "@/components/marketing/section-heading"
 const TESTIMONIALS = [
   {
     quote:
-      '"I stopped re-reading 80-page contracts to find one clause. kora answers and shows me the exact line — I verify in a click instead of an hour."',
+      '"I stopped re-reading 80-page contracts to find one clause. docsy answers and shows me the exact line — I verify in a click instead of an hour."',
     name: "Dana Reyes",
     initials: "DR",
     role: "Counsel · Northwind Legal",
@@ -19,7 +19,7 @@ const TESTIMONIALS = [
   },
   {
     quote:
-      '"When kora can\'t support a claim, it tells me. That single behavior is why our research team actually trusts it."',
+      '"When docsy can\'t support a claim, it tells me. That single behavior is why our research team actually trusts it."',
     name: "Sara Kim",
     initials: "SK",
     role: "Lead · Atlas Research",

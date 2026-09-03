@@ -17,7 +17,7 @@ const STEPS = [
     number: "02",
     title: "Ask in plain language",
     description:
-      "Ask across one document or your entire library. kora streams back an answer and pulls from exactly the right files.",
+      "Ask across one document or your entire library. docsy streams back an answer and pulls from exactly the right files.",
   },
   {
     number: "03",

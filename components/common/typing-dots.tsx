@@ -8,7 +8,7 @@ const DELAYS = ["[animation-delay:0ms]", "[animation-delay:200ms]", "[animation-
  */
 function TypingDots({
   className,
-  label = "kora is typing",
+  label = "docsy is typing",
 }: {
   className?: string
   label?: string

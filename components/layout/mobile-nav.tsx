@@ -20,7 +20,7 @@ import {
   useAuthDialog,
   type AuthMode,
 } from "@/components/auth/auth-dialog-provider"
-import { koraLogo } from "@/components/brand/kora-logo"
+import { docsyLogo } from "@/components/brand/docsy-logo"
 import { SearchDocsButton } from "@/components/search/search-docs-button"
 
 function MobileNav({
@@ -66,8 +66,8 @@ function MobileNav({
       >
         <SheetHeader>
           <SheetTitle>
-            <koraLogo />
-            <span className="sr-only">kora navigation</span>
+            <docsyLogo />
+            <span className="sr-only">docsy navigation</span>
           </SheetTitle>
         </SheetHeader>
         <div className="px-4">
@@ -99,7 +99,7 @@ function MobileNav({
               Sign in
             </Button>
             <Button onClick={() => requestAuth("sign-up")}>
-              Try kora free
+              Try docsy free
             </Button>
           </SheetFooter>
         )}

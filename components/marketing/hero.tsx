@@ -38,14 +38,14 @@ function Hero() {
           </h1>
 
           <p className="max-w-lg text-lg leading-relaxed text-muted-foreground">
-            kora reads your PDFs, contracts, and reports, then answers in plain
+            docsy reads your PDFs, contracts, and reports, then answers in plain
             language — with a link to the exact passage behind every claim. No
             more Ctrl-F. No skimming. No hallucinations.
           </p>
 
           <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
             <AuthDialogTrigger mode="sign-up" className={CTA_CLASSES}>
-              Try kora free
+              Try docsy free
               <ArrowRightIcon data-icon="inline-end" />
             </AuthDialogTrigger>
             <Button

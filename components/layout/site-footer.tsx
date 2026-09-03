@@ -2,7 +2,7 @@ import Link from "next/link"
 
 import { footerNav, siteConfig } from "@/lib/site-config"
 import { Separator } from "@/components/ui/separator"
-import { koraLogo } from "@/components/brand/kora-logo"
+import { docsyLogo } from "@/components/brand/docsy-logo"
 
 function SiteFooter() {
   return (
@@ -10,8 +10,8 @@ function SiteFooter() {
       <div className="mx-auto w-full max-w-6xl px-6">
         <div className="flex flex-col gap-8 pt-14 pb-12">
           <div className="flex flex-col gap-4">
-            <Link href="/" aria-label="kora home" className="w-fit">
-              <koraLogo size="sm" />
+            <Link href="/" aria-label="docsy home" className="w-fit">
+              <docsyLogo size="sm" />
             </Link>
             <p className="max-w-72 text-sm leading-relaxed text-muted-foreground">
               Chat with your documents — with a citation for every answer.
