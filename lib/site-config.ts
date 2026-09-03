@@ -4,9 +4,9 @@ export type NavItem = {
 }
 
 export const siteConfig = {
-  name: "kora",
+  name: "docsy",
   description:
-    "kora turns scattered docs into a single searchable workspace your team can trust.",
+    "docsy turns scattered docs into a single searchable workspace your team can trust.",
 }
 
 export type NavGroup = {

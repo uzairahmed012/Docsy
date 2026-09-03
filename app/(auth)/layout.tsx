@@ -2,7 +2,7 @@ import Link from "next/link"
 
 import { enabledSocialProviderIds } from "@/lib/auth-providers"
 import { AuthDialogProvider } from "@/components/auth/auth-dialog-provider"
-import { koraLogo } from "@/components/brand/kora-logo"
+import { docsyLogo } from "@/components/brand/docsy-logo"
 
 /**
  * Standalone chrome for the few auth screens that can't be a modal, because
@@ -19,8 +19,8 @@ export default function AuthLayout({
   return (
     <AuthDialogProvider socialProviders={enabledSocialProviderIds()}>
       <div className="flex min-h-svh flex-col items-center justify-center gap-8 px-6 py-16">
-        <Link href="/" aria-label="kora home">
-          <koraLogo />
+        <Link href="/" aria-label="docsy home">
+          <docsyLogo />
         </Link>
         {children}
       </div>

@@ -9,7 +9,7 @@ import {
 } from "@/lib/email/templates"
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY
-const EMAIL_FROM = process.env.EMAIL_FROM ?? "kora <onboarding@resend.dev>"
+const EMAIL_FROM = process.env.EMAIL_FROM ?? "docsy <onboarding@resend.dev>"
 const EMAIL_REPLY_TO = process.env.EMAIL_REPLY_TO
 
 // Constructed once, and only when a key exists — the SDK throws on an empty one.
